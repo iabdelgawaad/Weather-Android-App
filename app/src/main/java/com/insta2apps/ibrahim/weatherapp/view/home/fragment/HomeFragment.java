@@ -23,7 +23,7 @@ import com.insta2apps.ibrahim.weatherapp.view.activity.MainActivity;
 import com.insta2apps.ibrahim.weatherapp.view.base.BaseFragment;
 import com.insta2apps.ibrahim.weatherapp.view.forecast.fragment.FiveDaysForecastFragment;
 import com.insta2apps.ibrahim.weatherapp.view.home.HomeView;
-import com.insta2apps.ibrahim.weatherapp.view.home.adapter.CityAdapter;
+import com.insta2apps.ibrahim.weatherapp.view.home.adapter.HomeAdapter;
 import com.insta2apps.ibrahim.weatherapp.view.home.model.Country;
 import com.insta2apps.ibrahim.weatherapp.view.home.presenter.HomePresenter;
 import com.insta2apps.ibrahim.weatherapp.view.home.presenter.HomePresenterImp;
@@ -42,11 +42,11 @@ import java.util.List;
  * create an instance of this fragment.
  */
 
-public class HomeFragment extends BaseFragment<HomePresenter> implements CityAdapter.OnItemClickListener, HomeView {
+public class HomeFragment extends BaseFragment<HomePresenter> implements HomeAdapter.OnItemClickListener, HomeView {
 
     private OnFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
-    private CityAdapter cityAdapter;
+    private HomeAdapter homeAdapter;
     private ProgressBar loadingProgressBar;
     private LinearLayout errorLayout;
     private TextView txtError;
@@ -166,9 +166,9 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements CityAda
         country.setId(1);
         countryList.add(country);
 
-        cityAdapter = new CityAdapter(getActivity(), countryList, this);
-        recyclerView.setAdapter(cityAdapter);
-        cityAdapter.notifyDataSetChanged();
+        homeAdapter = new HomeAdapter(getActivity(), countryList, this);
+        recyclerView.setAdapter(homeAdapter);
+        homeAdapter.notifyDataSetChanged();
     }
 
     @Override

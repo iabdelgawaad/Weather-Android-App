@@ -15,7 +15,7 @@ import java.util.List;
  * Created by Ibrahim AbdelGawad on 1/30/2018.
  */
 
-public class CityAdapter extends RecyclerView.Adapter<CityViewHolder> {
+public class HomeAdapter extends RecyclerView.Adapter<HomeViewHolder> {
     private Context mContext;
     private List<Country> countryModelList;
 
@@ -26,21 +26,21 @@ public class CityAdapter extends RecyclerView.Adapter<CityViewHolder> {
 
     private final OnItemClickListener listener;
 
-    public CityAdapter(Context mContext, List<Country> countryModelList, OnItemClickListener listener) {
+    public HomeAdapter(Context mContext, List<Country> countryModelList, OnItemClickListener listener) {
         this.mContext = mContext;
         this.countryModelList = countryModelList;
         this.listener = listener;
     }
 
     @Override
-    public CityViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public HomeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.city_card_item, parent, false);
-        return new CityViewHolder(itemView, mContext);
+        return new HomeViewHolder(itemView, mContext);
     }
 
     @Override
-    public void onBindViewHolder(CityViewHolder holder, int position) {
+    public void onBindViewHolder(HomeViewHolder holder, int position) {
         holder.bind(countryModelList.get(position), listener);
     }
 

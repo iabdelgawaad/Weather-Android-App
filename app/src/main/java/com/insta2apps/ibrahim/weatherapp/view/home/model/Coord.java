@@ -3,7 +3,7 @@ package com.insta2apps.ibrahim.weatherapp.view.home.model;
 /**
  * Created by Ibrahim AbdelGawad on 1/30/2018.
  */
-public class Coordinator {
+public class Coord {
 
     private Double lon;
     private Double lat;

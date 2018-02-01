@@ -8,7 +8,7 @@ public class Country {
     private Integer id;
     private String name;
     private String country;
-    private Coordinator Coordinator;
+    private Coord Coord;
 
     public Integer getId() {
         return id;
@@ -34,11 +34,11 @@ public class Country {
         this.country = country;
     }
 
-    public Coordinator getCoordinator() {
-        return Coordinator;
+    public Coord getCoord() {
+        return Coord;
     }
 
-    public void setCoordinator(Coordinator Coordinator) {
-        this.Coordinator = Coordinator;
+    public void setCoord(Coord Coord) {
+        this.Coord = Coord;
     }
 }

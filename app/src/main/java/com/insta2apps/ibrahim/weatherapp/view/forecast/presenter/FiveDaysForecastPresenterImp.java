@@ -1,5 +1,7 @@
 package com.insta2apps.ibrahim.weatherapp.view.forecast.presenter;
 
+import android.os.Handler;
+
 import com.insta2apps.ibrahim.weatherapp.view.forecast.ForecastView;
 
 /**
@@ -7,10 +9,22 @@ import com.insta2apps.ibrahim.weatherapp.view.forecast.ForecastView;
  */
 
 public class FiveDaysForecastPresenterImp extends FiveDaysForecastPresenter {
-    ForecastView forecastView;
 
-    public FiveDaysForecastPresenterImp(ForecastView forecastView)
-    {
-        this.forecastView = forecastView;
+    public FiveDaysForecastPresenterImp(ForecastView view) {
+        attachView(view);
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        if (getView() == null) return;
+        getView().showLoading();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getView().showContent();
+            }
+        }, 2000);
     }
 }

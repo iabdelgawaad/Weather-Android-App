@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
  * Created by Ibrahim AbdelGawad on 1/30/2018.
  */
 
-public class CityViewHolder extends RecyclerView.ViewHolder {
+public class HomeViewHolder extends RecyclerView.ViewHolder {
 
     private Context context;
     @BindView(R.id.thumbnail)
@@ -28,16 +28,16 @@ public class CityViewHolder extends RecyclerView.ViewHolder {
     ImageView remove;
 
 
-    CityViewHolder(View view, Context context) {
+    HomeViewHolder(View view, Context context) {
         super(view);
         ButterKnife.bind(this, view);
         this.context = context;
     }
 
-    public void bind(final Country item, final CityAdapter.OnItemClickListener listener) {
+    public void bind(final Country item, final HomeAdapter.OnItemClickListener listener) {
         title.setText(item.getName());
         try {
-            Glide.with(context).load(R.drawable.ic_search).into(image);
+            Glide.with(context).load(R.drawable.ic_cloud).into(image);
         } catch (Exception e) {
             e.printStackTrace();
         }
