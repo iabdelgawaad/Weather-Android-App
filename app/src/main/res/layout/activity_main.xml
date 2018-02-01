@@ -3,18 +3,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blue"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppThemeFull.AppBarOverlay"
+        android:background="@color/blue"
         app:elevation="0dp">
 
         <include
             android:id="@+id/inc_toolbar"
             layout="@layout/toolbar" />
+
+        <AutoCompleteTextView
+            android:id="@+id/countries_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@android:color/white"
+            android:drawableLeft="@drawable/ic_search"
+            android:ems="10"
+            android:hint="@string/search_hint_text"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@null">
+            />
+        </AutoCompleteTextView>
+
     </android.support.design.widget.AppBarLayout>
 
     <FrameLayout

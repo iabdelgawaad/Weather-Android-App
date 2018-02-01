@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 
 import com.insta2apps.ibrahim.weatherapp.R;
-import com.insta2apps.ibrahim.weatherapp.view.presenter.BasePresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

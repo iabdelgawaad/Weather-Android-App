@@ -1,4 +1,4 @@
-package com.insta2apps.ibrahim.weatherapp.view.presenter;
+package com.insta2apps.ibrahim.weatherapp.view.base;
 
 import java.lang.ref.WeakReference;
 

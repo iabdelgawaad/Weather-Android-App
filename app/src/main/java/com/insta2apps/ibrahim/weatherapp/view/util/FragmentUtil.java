@@ -5,10 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
-/**
- * Created by Ahmed Khamis on 14/10/2017.
- */
-
 public class FragmentUtil {
 
     //===================================================================================//

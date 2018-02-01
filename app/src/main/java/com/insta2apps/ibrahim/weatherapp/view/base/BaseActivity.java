@@ -5,8 +5,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.insta2apps.ibrahim.weatherapp.view.presenter.BasePresenter;
-
 /**
  * Created by Ibrahim AbdelGawad on 1/28/2018.
  */
