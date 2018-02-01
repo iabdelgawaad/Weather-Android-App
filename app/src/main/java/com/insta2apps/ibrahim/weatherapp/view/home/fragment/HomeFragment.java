@@ -22,8 +22,8 @@ import com.insta2apps.ibrahim.weatherapp.view.forecast.fragment.FiveDaysForecast
 import com.insta2apps.ibrahim.weatherapp.view.home.HomeView;
 import com.insta2apps.ibrahim.weatherapp.view.home.adapter.CityAdapter;
 import com.insta2apps.ibrahim.weatherapp.view.home.model.Country;
-import com.insta2apps.ibrahim.weatherapp.view.home.presenter.CountryPresenter;
-import com.insta2apps.ibrahim.weatherapp.view.home.presenter.CountryPresenterImp;
+import com.insta2apps.ibrahim.weatherapp.view.home.presenter.HomePresenter;
+import com.insta2apps.ibrahim.weatherapp.view.home.presenter.HomePresenterImp;
 import com.insta2apps.ibrahim.weatherapp.view.util.GridSpacingItemDecoration;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ import java.util.List;
  * create an instance of this fragment.
  */
 
-public class HomeFragment extends BaseFragment<CountryPresenter> implements CityAdapter.OnItemClickListener, HomeView {
+public class HomeFragment extends BaseFragment<HomePresenter> implements CityAdapter.OnItemClickListener, HomeView {
 
     private OnFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
@@ -56,33 +56,32 @@ public class HomeFragment extends BaseFragment<CountryPresenter> implements City
     }
 
     @Override
-    public CountryPresenter getPresenter() {
-        return new CountryPresenterImp(this);
+    public HomePresenter getPresenter() {
+        return new HomePresenterImp(this);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setPresenter(getPresenter());
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getPresenter().init();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-
         recyclerView = (RecyclerView) view.findViewById(R.id.cities_recycler_view);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        getPresenter().populate();
-
         return view;
     }
 
@@ -201,7 +200,6 @@ public class HomeFragment extends BaseFragment<CountryPresenter> implements City
     @Override
     public void onResume() {
         super.onResume();
-        
         if (getActivity() instanceof MainActivity)
             ((MainActivity) getActivity()).setAppBarVisibility(true);
     }

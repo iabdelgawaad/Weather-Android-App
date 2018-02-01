@@ -4,21 +4,20 @@ import com.insta2apps.ibrahim.weatherapp.view.home.HomeView;
 import com.insta2apps.ibrahim.weatherapp.view.home.model.Country;
 
 import java.util.ArrayList;
+import java.util.logging.Handler;
 
 /**
  * Created by Ibrahim AbdelGawad on 1/30/2018.
  */
 
-public class CountryPresenterImp extends CountryPresenter {
-    HomeView homeView;
+public class HomePresenterImp extends HomePresenter {
 
-    public CountryPresenterImp(HomeView homeView) {
-        this.homeView = homeView;
+    public HomePresenterImp(HomeView homeView) {
+        attachView(homeView);
     }
 
     @Override
     public void populate() {
-        homeView.showCountryList(new ArrayList<Country>());
     }
 
     @Override
@@ -28,6 +27,15 @@ public class CountryPresenterImp extends CountryPresenter {
 
     @Override
     public void onItemClick(Country country) {
-        homeView.openItemDetail(country);
+        getView().openItemDetail(country);
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        if (getView() == null) return;
+        getView().showLoading();
+
+        getView().showCountryList(new ArrayList<Country>());
     }
 }

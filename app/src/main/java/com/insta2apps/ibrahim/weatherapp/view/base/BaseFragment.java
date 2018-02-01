@@ -1,15 +1,14 @@
 package com.insta2apps.ibrahim.weatherapp.view.base;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 
 import com.insta2apps.ibrahim.weatherapp.R;
-import com.insta2apps.ibrahim.weatherapp.view.util.FragmentUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -18,7 +17,7 @@ import butterknife.ButterKnife;
  * Created by Ibrahim AbdelGawad on 1/28/2018.
  */
 
-public abstract class BaseFragment<P extends BasePresenter> extends android.support.v4.app.Fragment implements BasePresenter.View, OnBackPressedInterface {
+public abstract class BaseFragment<P extends BasePresenter> extends Fragment implements BasePresenter.View, OnBackPressedInterface {
     protected Context mContext;
     protected View rootView;
     protected ViewStub mainViewStub;
@@ -29,6 +28,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends android.supp
 
     @BindView(R.id.main_loading)
     View loadingView;
+
 
     protected P mPresenter;
 
@@ -130,9 +130,12 @@ public abstract class BaseFragment<P extends BasePresenter> extends android.supp
     }
 
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        FragmentUtil.reAttachCurrentFragment(this);
+    public void setBackView(View view) {
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
     }
 }

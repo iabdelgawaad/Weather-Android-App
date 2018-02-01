@@ -46,6 +46,8 @@ public class FiveDaysForecastFragment extends BaseFragment<FiveDaysForecastPrese
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+
         View view = inflater.inflate(R.layout.fragment_forecast, container, false);
 
         return view;
