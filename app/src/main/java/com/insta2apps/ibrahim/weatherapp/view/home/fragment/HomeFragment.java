@@ -13,6 +13,9 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.insta2apps.ibrahim.weatherapp.R;
@@ -25,6 +28,7 @@ import com.insta2apps.ibrahim.weatherapp.view.home.model.Country;
 import com.insta2apps.ibrahim.weatherapp.view.home.presenter.HomePresenter;
 import com.insta2apps.ibrahim.weatherapp.view.home.presenter.HomePresenterImp;
 import com.insta2apps.ibrahim.weatherapp.view.util.GridSpacingItemDecoration;
+import com.insta2apps.ibrahim.weatherapp.view.util.NetworkConnectionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +47,10 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements CityAda
     private OnFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
     private CityAdapter cityAdapter;
+    private ProgressBar loadingProgressBar;
+    private LinearLayout errorLayout;
+    private TextView txtError;
+
     private List<Country> countryList = new ArrayList<>();
 
     public HomeFragment() {
@@ -73,8 +81,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements CityAda
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.cities_recycler_view);
@@ -82,6 +89,9 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements CityAda
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        loadingProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        errorLayout = (LinearLayout) view.findViewById(R.id.error_layout);
+        txtError = (TextView) view.findViewById(R.id.error_txt_cause);
         return view;
     }
 
@@ -103,10 +113,10 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements CityAda
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-        countryList.clear();
+    public void onResume() {
+        super.onResume();
+        if (getActivity() instanceof MainActivity)
+            ((MainActivity) getActivity()).setAppBarVisibility(true);
     }
 
     @Override
@@ -181,12 +191,29 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements CityAda
 
     @Override
     public void showLoading() {
-        super.showLoading();
+        loadingProgressBar.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+        errorLayout.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void showContent() {
-        super.showContent();
+        recyclerView.setVisibility(View.VISIBLE);
+        loadingProgressBar.setVisibility(View.INVISIBLE);
+        errorLayout.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showError(int errorMessage) {
+        errorLayout.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+        loadingProgressBar.setVisibility(View.GONE);
+        txtError.setText(getString(errorMessage));
+    }
+
+    @Override
+    public boolean isConnected() {
+        return NetworkConnectionUtil.isNetworkAvailable(mContext);
     }
 
     @Override
@@ -198,9 +225,9 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements CityAda
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (getActivity() instanceof MainActivity)
-            ((MainActivity) getActivity()).setAppBarVisibility(true);
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+        countryList.clear();
     }
 }

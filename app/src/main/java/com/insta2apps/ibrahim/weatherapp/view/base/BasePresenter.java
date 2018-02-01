@@ -1,5 +1,7 @@
 package com.insta2apps.ibrahim.weatherapp.view.base;
 
+import android.support.annotation.StringRes;
+
 import java.lang.ref.WeakReference;
 
 /**
@@ -54,5 +56,9 @@ public class BasePresenter<T extends BasePresenter.View> {
         void showLoading();
 
         void showContent();
+
+        void showError(@StringRes int errorMessage);
+
+        boolean isConnected();
     }
 }

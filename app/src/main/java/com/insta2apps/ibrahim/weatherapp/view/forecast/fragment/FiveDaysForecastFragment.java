@@ -13,6 +13,7 @@ import com.insta2apps.ibrahim.weatherapp.view.base.Constants;
 import com.insta2apps.ibrahim.weatherapp.view.forecast.ForecastView;
 import com.insta2apps.ibrahim.weatherapp.view.forecast.presenter.FiveDaysForecastPresenter;
 import com.insta2apps.ibrahim.weatherapp.view.forecast.presenter.FiveDaysForecastPresenterImp;
+import com.insta2apps.ibrahim.weatherapp.view.util.NetworkConnectionUtil;
 
 /**
  * Created by Ibrahim AbdelGawad on 2/1/2018.
@@ -71,5 +72,15 @@ public class FiveDaysForecastFragment extends BaseFragment<FiveDaysForecastPrese
     @Override
     public void showContent() {
         super.showContent();
+    }
+
+    @Override
+    public void showError(int errorMessage) {
+
+    }
+
+    @Override
+    public boolean isConnected() {
+        return NetworkConnectionUtil.isNetworkAvailable(mContext);
     }
 }

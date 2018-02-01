@@ -1,10 +1,11 @@
 package com.insta2apps.ibrahim.weatherapp.view.home.presenter;
 
+import android.os.Handler;
+
 import com.insta2apps.ibrahim.weatherapp.view.home.HomeView;
 import com.insta2apps.ibrahim.weatherapp.view.home.model.Country;
 
 import java.util.ArrayList;
-import java.util.logging.Handler;
 
 /**
  * Created by Ibrahim AbdelGawad on 1/30/2018.
@@ -36,6 +37,12 @@ public class HomePresenterImp extends HomePresenter {
         if (getView() == null) return;
         getView().showLoading();
 
-        getView().showCountryList(new ArrayList<Country>());
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getView().showContent();
+                getView().showCountryList(new ArrayList<Country>());
+            }
+        }, 2000);
     }
 }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.insta2apps.ibrahim.weatherapp.R;
+import com.insta2apps.ibrahim.weatherapp.view.util.NetworkConnectionUtil;
 
 /**
  * Created by Ibrahim AbdelGawad on 1/28/2018.
@@ -56,6 +57,16 @@ public class BaseActivity extends AppCompatActivity implements BasePresenter.Vie
     @Override
     public void showContent() {
 
+    }
+
+    @Override
+    public void showError(int errorMessage) {
+
+    }
+
+    @Override
+    public boolean isConnected() {
+        return NetworkConnectionUtil.isNetworkAvailable(this);
     }
 
     @Override

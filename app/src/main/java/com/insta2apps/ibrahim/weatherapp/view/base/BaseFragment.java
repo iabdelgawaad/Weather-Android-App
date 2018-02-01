@@ -119,7 +119,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
 
     @Override
     public void showLoading() {
-        contentView.setVisibility(View.VISIBLE);
+        contentView.setVisibility(View.GONE);
         loadingView.setVisibility(View.VISIBLE);
     }
 
