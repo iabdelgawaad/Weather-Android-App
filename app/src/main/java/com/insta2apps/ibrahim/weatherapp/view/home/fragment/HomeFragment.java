@@ -16,9 +16,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.insta2apps.ibrahim.weatherapp.R;
+import com.insta2apps.ibrahim.weatherapp.view.activity.MainActivity;
+import com.insta2apps.ibrahim.weatherapp.view.base.BaseFragment;
+import com.insta2apps.ibrahim.weatherapp.view.forecast.fragment.FiveDaysForecastFragment;
 import com.insta2apps.ibrahim.weatherapp.view.home.HomeView;
 import com.insta2apps.ibrahim.weatherapp.view.home.adapter.CityAdapter;
-import com.insta2apps.ibrahim.weatherapp.view.base.BaseFragment;
 import com.insta2apps.ibrahim.weatherapp.view.home.model.Country;
 import com.insta2apps.ibrahim.weatherapp.view.home.presenter.CountryPresenter;
 import com.insta2apps.ibrahim.weatherapp.view.home.presenter.CountryPresenterImp;
@@ -105,6 +107,7 @@ public class HomeFragment extends BaseFragment<CountryPresenter> implements City
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        countryList.clear();
     }
 
     @Override
@@ -113,8 +116,10 @@ public class HomeFragment extends BaseFragment<CountryPresenter> implements City
     }
 
     @Override
-    public void onItemClick(Country item) {
+    public void onItemClick(Country country) {
         Toast.makeText(getActivity(), "On item Click ", Toast.LENGTH_SHORT).show();
+        if (country != null)
+            getPresenter().onItemClick(country);
     }
 
     @Override
@@ -122,34 +127,45 @@ public class HomeFragment extends BaseFragment<CountryPresenter> implements City
         Toast.makeText(getActivity(), "On remove Click ", Toast.LENGTH_SHORT).show();
 
         if (country != null)
-        getPresenter().remove(country.getId());
+            getPresenter().remove(country.getId());
     }
 
     @Override
     public void showCountryList(List<Country> shirtModelArrayList) {
         Country country1 = new Country();
         country1.setName("Cairo");
+        country1.setId(1);
         countryList.add(country1);
 
         Country country2 = new Country();
         country2.setName("Cairo");
+        country2.setId(1);
         countryList.add(country2);
 
         Country country3 = new Country();
         country3.setName("Cairo");
+        country3.setId(1);
         countryList.add(country3);
 
         Country country4 = new Country();
         country4.setName("Cairo");
+        country4.setId(1);
         countryList.add(country4);
 
         Country country = new Country();
         country.setName("Cairo");
+        country.setId(1);
         countryList.add(country);
 
         cityAdapter = new CityAdapter(getActivity(), countryList, this);
         recyclerView.setAdapter(cityAdapter);
         cityAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void openItemDetail(Country country) {
+        if (getActivity() instanceof MainActivity)
+            ((MainActivity) getActivity()).replaceFragment(FiveDaysForecastFragment.newInstance(country.getId()));
     }
 
     public interface OnFragmentInteractionListener {
@@ -172,5 +188,21 @@ public class HomeFragment extends BaseFragment<CountryPresenter> implements City
     @Override
     public void showContent() {
         super.showContent();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if (countryList != null)
+            countryList.clear();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        
+        if (getActivity() instanceof MainActivity)
+            ((MainActivity) getActivity()).setAppBarVisibility(true);
     }
 }

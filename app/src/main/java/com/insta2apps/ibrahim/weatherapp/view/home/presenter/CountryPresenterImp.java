@@ -25,4 +25,9 @@ public class CountryPresenterImp extends CountryPresenter {
     public void remove(int cityId) {
 
     }
+
+    @Override
+    public void onItemClick(Country country) {
+        homeView.openItemDetail(country);
+    }
 }

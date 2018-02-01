@@ -11,4 +11,5 @@ import java.util.List;
 
 public interface HomeView extends BasePresenter.View {
     void showCountryList(List<Country> shirtModelArrayList);
+    void openItemDetail(Country country);
 }

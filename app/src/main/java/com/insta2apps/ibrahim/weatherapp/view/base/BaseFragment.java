@@ -1,6 +1,7 @@
 package com.insta2apps.ibrahim.weatherapp.view.base;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 
 import com.insta2apps.ibrahim.weatherapp.R;
+import com.insta2apps.ibrahim.weatherapp.view.util.FragmentUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,7 +29,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends android.supp
 
     @BindView(R.id.main_loading)
     View loadingView;
-
 
     protected P mPresenter;
 
@@ -129,12 +130,9 @@ public abstract class BaseFragment<P extends BasePresenter> extends android.supp
     }
 
 
-    public void setBackView(View view) {
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-            }
-        });
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        FragmentUtil.reAttachCurrentFragment(this);
     }
 }

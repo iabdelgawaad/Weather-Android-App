@@ -1,9 +1,11 @@
-package com.insta2apps.ibrahim.weatherapp.view;
+package com.insta2apps.ibrahim.weatherapp.view.activity;
 
 import android.app.Activity;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -13,6 +15,8 @@ import com.insta2apps.ibrahim.weatherapp.R;
 import com.insta2apps.ibrahim.weatherapp.view.base.BaseActivity;
 import com.insta2apps.ibrahim.weatherapp.view.home.fragment.HomeFragment;
 import com.insta2apps.ibrahim.weatherapp.view.util.FragmentUtil;
+
+import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity implements HomeFragment.OnFragmentInteractionListener {
 
@@ -26,7 +30,8 @@ public class MainActivity extends BaseActivity implements HomeFragment.OnFragmen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setHomeTitle(R.id.inc_toolbar, R.id.tv_title, getString(R.string.app_name), R.color.blue, R.color.black);
+        ButterKnife.bind(this);
+        setHomeTitle(R.id.inc_toolbar, R.id.tv_title, getString(R.string.app_name), R.color.blue, R.color.white);
 
         //search
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
@@ -46,12 +51,20 @@ public class MainActivity extends BaseActivity implements HomeFragment.OnFragmen
 
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if (fragment == null) {
-            pushFragment(HomeFragment.newInstance());
+            FragmentUtil.replaceFragment(
+                    getSupportFragmentManager(), R.id.fragment_container, HomeFragment.newInstance(), null);
         }
+
     }
 
     public void pushFragment(Fragment fragment){
         FragmentUtil.addFragment(
+                getSupportFragmentManager(), R.id.fragment_container, fragment, fragment.getClass().getName());
+    }
+
+    public void replaceFragment(Fragment fragment)
+    {
+        FragmentUtil.replaceFragment(
                 getSupportFragmentManager(), R.id.fragment_container, fragment, fragment.getClass().getName());
     }
 
