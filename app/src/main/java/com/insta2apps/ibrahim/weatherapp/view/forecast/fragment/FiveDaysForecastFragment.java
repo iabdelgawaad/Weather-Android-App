@@ -5,32 +5,57 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.insta2apps.ibrahim.weatherapp.R;
 import com.insta2apps.ibrahim.weatherapp.view.activity.MainActivity;
 import com.insta2apps.ibrahim.weatherapp.view.base.BaseFragment;
 import com.insta2apps.ibrahim.weatherapp.view.base.Constants;
 import com.insta2apps.ibrahim.weatherapp.view.forecast.ForecastView;
+import com.insta2apps.ibrahim.weatherapp.view.forecast.adapter.CityAdapter;
+import com.insta2apps.ibrahim.weatherapp.view.forecast.model.FiveDaysForeCastModel;
+import com.insta2apps.ibrahim.weatherapp.view.forecast.model.List;
 import com.insta2apps.ibrahim.weatherapp.view.forecast.presenter.FiveDaysForecastPresenter;
 import com.insta2apps.ibrahim.weatherapp.view.forecast.presenter.FiveDaysForecastPresenterImp;
 import com.insta2apps.ibrahim.weatherapp.view.util.NetworkConnectionUtil;
+
+import butterknife.BindView;
+
+import static com.insta2apps.ibrahim.weatherapp.view.base.Constants.WEATHER_IMAGE_EXTENSION;
+import static com.insta2apps.ibrahim.weatherapp.view.base.Constants.WEATHER_IMAGE_URL;
 
 /**
  * Created by Ibrahim AbdelGawad on 2/1/2018.
  */
 
-public class FiveDaysForecastFragment extends BaseFragment<FiveDaysForecastPresenter> implements ForecastView {
+public class FiveDaysForecastFragment extends BaseFragment<FiveDaysForecastPresenter> implements ForecastView, CityAdapter.OnCityClickListener {
 
-    private ProgressBar loadingProgressBar;
-    private LinearLayout errorLayout;
-    private TextView txtError;
-    private RecyclerView recyclerView;
+    @BindView(R.id.forecast_recycler_view)
+    RecyclerView recyclerView;
+    private CityAdapter cityAdapter;
+    @BindView(R.id.city_name_text_view)
+    TextView cityName;
+    @BindView(R.id.temperature_text_view)
+    TextView temperatureTextView;
+    @BindView(R.id.weather_condition_text_view)
+    TextView weatherCondition;
+    @BindView(R.id.progressBar)
+    ProgressBar loadingProgressBar;
+    @BindView(R.id.error_layout)
+    LinearLayout errorLayout;
+    @BindView(R.id.error_txt_cause)
+    TextView txtError;
+    @BindView(R.id.humidity_text_view)
+    TextView humidityTextView;
+    @BindView(R.id.wind_speed_text_view)
+    TextView windSpeedTextView;
+    @BindView(R.id.weather_image_view)
+    ImageView todayWeatherImage;
 
     public FiveDaysForecastFragment() {
     }
@@ -52,25 +77,12 @@ public class FiveDaysForecastFragment extends BaseFragment<FiveDaysForecastPrese
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (getActivity() instanceof MainActivity)
-            ((MainActivity) getActivity()).setAppBarVisibility(false);
-        getPresenter().init();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_forecast, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.forecast_recycler_view);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        loadingProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-        errorLayout = (LinearLayout) view.findViewById(R.id.error_layout);
-        txtError = (TextView) view.findViewById(R.id.error_txt_cause);
-
-        return view;
+        if (getActivity() instanceof MainActivity)
+            ((MainActivity) getActivity()).setAppBarVisibility(false);
+        getPresenter().init();
     }
 
     @Override
@@ -108,5 +120,32 @@ public class FiveDaysForecastFragment extends BaseFragment<FiveDaysForecastPrese
     @Override
     public boolean isConnected() {
         return NetworkConnectionUtil.isNetworkAvailable(mContext);
+    }
+
+    @Override
+    public void showCityForecast(FiveDaysForeCastModel fiveDaysForeCastModel) {
+        cityName.setText(fiveDaysForeCastModel.getCity().getName());
+        temperatureTextView.setText(fiveDaysForeCastModel.getList().get(0).getMain().getTemp() + "");
+        weatherCondition.setText(fiveDaysForeCastModel.getList().get(0).getWeather().get(0).getDescription());
+        humidityTextView.setText(fiveDaysForeCastModel.getList().get(0).getMain().getHumidity() + "");
+        windSpeedTextView.setText(fiveDaysForeCastModel.getList().get(0).getWind().getSpeed() + "");
+        try {
+            Glide.with(getActivity()).load(WEATHER_IMAGE_URL + fiveDaysForeCastModel.getList()
+                    .get(0).getWeather().get(0).getIcon() + WEATHER_IMAGE_EXTENSION).into(todayWeatherImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void showFiveDaysWeatherList(java.util.List weatherList) {
+        cityAdapter = new CityAdapter(getActivity(), weatherList, this);
+        recyclerView.setAdapter(cityAdapter);
+        cityAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemClick(List city) {
+
     }
 }

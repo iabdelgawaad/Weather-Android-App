@@ -7,5 +7,5 @@ import com.insta2apps.ibrahim.weatherapp.view.forecast.ForecastView;
  * Created by Ibrahim AbdelGawad on 2/1/2018.
  */
 
-public class FiveDaysForecastPresenter extends BasePresenter<ForecastView> {
+public abstract class FiveDaysForecastPresenter extends BasePresenter<ForecastView> {
 }

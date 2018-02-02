@@ -2,7 +2,7 @@ package com.insta2apps.ibrahim.weatherapp.view.home.fragment;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.net.Uri;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,9 +10,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -33,23 +31,27 @@ import com.insta2apps.ibrahim.weatherapp.view.util.NetworkConnectionUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link HomeFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 
-public class HomeFragment extends BaseFragment<HomePresenter> implements HomeAdapter.OnItemClickListener, HomeView {
+public class HomeFragment extends BaseFragment<HomePresenter> implements HomeAdapter.OnItemClickListener, HomeView, MainActivity.HomeFragmentCommunicator {
 
-    private OnFragmentInteractionListener mListener;
-    private RecyclerView recyclerView;
+    @BindView(R.id.cities_recycler_view)
+    RecyclerView recyclerView;
     private HomeAdapter homeAdapter;
-    private ProgressBar loadingProgressBar;
-    private LinearLayout errorLayout;
-    private TextView txtError;
+    @BindView(R.id.progressBar)
+    ProgressBar loadingProgressBar;
+    @BindView(R.id.error_layout)
+    LinearLayout errorLayout;
+    @BindView(R.id.error_txt_cause)
+    TextView txtError;
 
     private List<Country> countryList = new ArrayList<>();
 
@@ -72,44 +74,22 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeAda
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setPresenter(getPresenter());
+        ((MainActivity) getActivity()).setHomeFragmentCommunicator(this);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getPresenter().init();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.cities_recycler_view);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        loadingProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-        errorLayout = (LinearLayout) view.findViewById(R.id.error_layout);
-        txtError = (TextView) view.findViewById(R.id.error_txt_cause);
-        return view;
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+        getPresenter().init();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
@@ -140,35 +120,14 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeAda
     }
 
     @Override
-    public void showCountryList(List<Country> shirtModelArrayList) {
-        Country country1 = new Country();
-        country1.setName("Cairo");
-        country1.setId(1);
-        countryList.add(country1);
-
-        Country country2 = new Country();
-        country2.setName("Cairo");
-        country2.setId(1);
-        countryList.add(country2);
-
-        Country country3 = new Country();
-        country3.setName("Cairo");
-        country3.setId(1);
-        countryList.add(country3);
-
-        Country country4 = new Country();
-        country4.setName("Cairo");
-        country4.setId(1);
-        countryList.add(country4);
-
-        Country country = new Country();
-        country.setName("Cairo");
-        country.setId(1);
-        countryList.add(country);
-
+    public void showCountryList(List<Country> countryList1) {
+        this.countryList = countryList1;
         homeAdapter = new HomeAdapter(getActivity(), countryList, this);
         recyclerView.setAdapter(homeAdapter);
         homeAdapter.notifyDataSetChanged();
+
+        if (getActivity() instanceof MainActivity)
+            ((MainActivity) getActivity()).updateSearchContent(countryList1);
     }
 
     @Override
@@ -177,8 +136,10 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeAda
             ((MainActivity) getActivity()).replaceFragment(FiveDaysForecastFragment.newInstance(country.getId()));
     }
 
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public void requestLocationPermission() {
+        if (getActivity() instanceof MainActivity)
+            ((MainActivity) getActivity()).setupLocationService();
     }
 
     /**
@@ -198,6 +159,8 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeAda
 
     @Override
     public void showContent() {
+        if (getActivity() instanceof MainActivity)
+            ((MainActivity) getActivity()).showContent();
         recyclerView.setVisibility(View.VISIBLE);
         loadingProgressBar.setVisibility(View.INVISIBLE);
         errorLayout.setVisibility(View.INVISIBLE);
@@ -227,7 +190,12 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeAda
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-        countryList.clear();
+        if (countryList != null && countryList.size() > 0)
+            countryList.clear();
+    }
+
+    @Override
+    public void isLocationGranted(boolean isLocationGranted, Location location) {
+        getPresenter().getSearchCityData(location);
     }
 }

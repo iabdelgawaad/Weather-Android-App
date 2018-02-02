@@ -12,5 +12,11 @@
     <string name="search_hint_text">Enter name of city</string>
     <string name="loading_text">Loading...</string>
     <string name="celsius_temperature">\u00B0</string>
+    <string name="dialog_location_permission_title">Location Permission Needed</string>
+    <string name="ok_text">OK</string>
+    <string name="dialog_location_permission_message">This app needs the Location permission</string>
+    <string name="gps_alert_dialog_message">Your GPS seems to be disabled, do you want to enable it?</string>
+    <string name="gps_alert_dialog_no_button">No</string>
+    <string name="gps_alert_dialog_yes_txt">Yes</string>
 
 </resources>

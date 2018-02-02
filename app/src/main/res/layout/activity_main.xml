@@ -28,6 +28,7 @@
             android:drawableLeft="@drawable/ic_search"
             android:ems="10"
             android:hint="@string/search_hint_text"
+            android:lines="1"
             android:textColor="@color/black"
             android:textCursorDrawable="@null">
             />

@@ -56,7 +56,6 @@ public class BaseActivity extends AppCompatActivity implements BasePresenter.Vie
 
     @Override
     public void showContent() {
-
     }
 
     @Override
