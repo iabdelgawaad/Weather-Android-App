@@ -14,4 +14,5 @@ public interface HomeView extends BasePresenter.View {
     void showCountryList(List<Country> countryList);
     void openItemDetail(Country country);
     void requestLocationPermission();
+    void updateSearchContent(List<Country> countryList);
 }

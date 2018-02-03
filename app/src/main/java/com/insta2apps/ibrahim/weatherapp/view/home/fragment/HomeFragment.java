@@ -125,21 +125,24 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeAda
         homeAdapter = new HomeAdapter(getActivity(), countryList, this);
         recyclerView.setAdapter(homeAdapter);
         homeAdapter.notifyDataSetChanged();
-
-        if (getActivity() instanceof MainActivity)
-            ((MainActivity) getActivity()).updateSearchContent(countryList1);
     }
 
     @Override
     public void openItemDetail(Country country) {
         if (getActivity() instanceof MainActivity)
-            ((MainActivity) getActivity()).replaceFragment(FiveDaysForecastFragment.newInstance(country.getId()));
+            ((MainActivity) getActivity()).replaceFragment(FiveDaysForecastFragment.newInstance(country.getName() + ""));
     }
 
     @Override
     public void requestLocationPermission() {
         if (getActivity() instanceof MainActivity)
             ((MainActivity) getActivity()).setupLocationService();
+    }
+
+    @Override
+    public void updateSearchContent(List<Country> countryList) {
+        if (getActivity() instanceof MainActivity)
+            ((MainActivity) getActivity()).updateSearchContent(countryList);
     }
 
     /**

@@ -2,6 +2,7 @@ package com.insta2apps.ibrahim.weatherapp.view.forecast.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,8 +34,7 @@ import static com.insta2apps.ibrahim.weatherapp.view.base.Constants.WEATHER_IMAG
  * Created by Ibrahim AbdelGawad on 2/1/2018.
  */
 
-public class FiveDaysForecastFragment extends BaseFragment<FiveDaysForecastPresenter> implements ForecastView, CityAdapter.OnCityClickListener {
-
+public class FiveDaysForecastFragment extends BaseFragment<FiveDaysForecastPresenter> implements ForecastView, CityAdapter.OnCityClickListener, SwipeRefreshLayout.OnRefreshListener {
     @BindView(R.id.forecast_recycler_view)
     RecyclerView recyclerView;
     private CityAdapter cityAdapter;
@@ -56,14 +56,22 @@ public class FiveDaysForecastFragment extends BaseFragment<FiveDaysForecastPrese
     TextView windSpeedTextView;
     @BindView(R.id.weather_image_view)
     ImageView todayWeatherImage;
+    @BindView(R.id.drop_img)
+    ImageView dropImage;
+    @BindView(R.id.flag_img)
+    ImageView flag_img;
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.cloud_add_image)
+    ImageView addImage;
 
     public FiveDaysForecastFragment() {
     }
 
-    public static FiveDaysForecastFragment newInstance(int cityId) {
+    public static FiveDaysForecastFragment newInstance(String cityName) {
         FiveDaysForecastFragment fragment = new FiveDaysForecastFragment();
         Bundle args = new Bundle();
-        args.putInt(Constants.CITY_ID, cityId);
+        args.putString(Constants.CITY_NAME, cityName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -82,7 +90,11 @@ public class FiveDaysForecastFragment extends BaseFragment<FiveDaysForecastPrese
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         if (getActivity() instanceof MainActivity)
             ((MainActivity) getActivity()).setAppBarVisibility(false);
-        getPresenter().init();
+        if (getArguments() != null && getArguments().containsKey(Constants.CITY_NAME)) {
+            //getPresenter().getCityById(getArguments().getString(Constants.CITY_ID), true);
+            getPresenter().getCityByName(getArguments().getString(Constants.CITY_NAME), true);
+        }
+        mSwipeRefreshLayout.setOnRefreshListener(this);
     }
 
     @Override
@@ -107,10 +119,13 @@ public class FiveDaysForecastFragment extends BaseFragment<FiveDaysForecastPrese
         recyclerView.setVisibility(View.VISIBLE);
         loadingProgressBar.setVisibility(View.INVISIBLE);
         errorLayout.setVisibility(View.INVISIBLE);
+        mSwipeRefreshLayout.setRefreshing(false);
+        addImage.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showError(int errorMessage) {
+        mSwipeRefreshLayout.setRefreshing(false);
         errorLayout.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
         loadingProgressBar.setVisibility(View.GONE);
@@ -135,6 +150,8 @@ public class FiveDaysForecastFragment extends BaseFragment<FiveDaysForecastPrese
         } catch (Exception e) {
             e.printStackTrace();
         }
+        dropImage.setVisibility(View.VISIBLE);
+        flag_img.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -147,5 +164,13 @@ public class FiveDaysForecastFragment extends BaseFragment<FiveDaysForecastPrese
     @Override
     public void onItemClick(List city) {
 
+    }
+
+    @Override
+    public void onRefresh() {
+        mSwipeRefreshLayout.setRefreshing(true);
+        if (getArguments() != null && getArguments().containsKey(Constants.CITY_NAME)) {
+            getPresenter().getCityByName(getArguments().getString(Constants.CITY_NAME), false);
+        }
     }
 }

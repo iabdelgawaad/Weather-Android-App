@@ -15,8 +15,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
@@ -26,7 +29,15 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.insta2apps.ibrahim.weatherapp.R;
+import com.insta2apps.ibrahim.weatherapp.WeatherApplication;
+import com.insta2apps.ibrahim.weatherapp.domain.error.ErrorHandler;
+import com.insta2apps.ibrahim.weatherapp.domain.error.ErrorModel;
+import com.insta2apps.ibrahim.weatherapp.source.network.ApiService;
+import com.insta2apps.ibrahim.weatherapp.source.network.NetworkManager;
 import com.insta2apps.ibrahim.weatherapp.view.base.BaseActivity;
+import com.insta2apps.ibrahim.weatherapp.view.base.Constants;
+import com.insta2apps.ibrahim.weatherapp.view.forecast.fragment.FiveDaysForecastFragment;
+import com.insta2apps.ibrahim.weatherapp.view.forecast.model.FiveDaysForeCastModel;
 import com.insta2apps.ibrahim.weatherapp.view.home.fragment.HomeFragment;
 import com.insta2apps.ibrahim.weatherapp.view.home.model.Country;
 import com.insta2apps.ibrahim.weatherapp.view.util.FragmentUtil;
@@ -37,6 +48,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks, LocationListener {
 
@@ -45,15 +60,15 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.Connec
     HomeFragmentCommunicator homeFragmentCommunicator;
     private static final int GPS_REQUEST = 100;
     public SharedPreferenceManager sharedPreferenceManager;
+    ArrayAdapter<String> stringArrayAdapter;
+    List<Country> countryList;
+    NetworkManager networkManager;
+    ApiService service;
+
 
     public interface HomeFragmentCommunicator {
         void isLocationGranted(boolean isLocationGranted, Location location);
     }
-
-    private static final String[] COUNTRIES = new String[]{
-            "Belgium", "France", "Google", "Germany", "Spain", "Spain", "Spain", "Spain",
-            "Spain", "Spain", "Spain", "Spain", "Spain", "Spain", "Spain", "Spain", "Spain"
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +77,11 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.Connec
         ButterKnife.bind(this);
         setHomeTitle(R.id.inc_toolbar, R.id.tv_title, getString(R.string.app_name), R.color.blue, R.color.white);
         sharedPreferenceManager = new SharedPreferenceManager(this);
+        networkManager = new NetworkManager(WeatherApplication.getInstance());
+        service = networkManager.service();
         //search
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, COUNTRIES);
         autoCompleteTextView = (AutoCompleteTextView)
                 findViewById(R.id.countries_list);
-
-        autoCompleteTextView.setAdapter(adapter);
         autoCompleteTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -77,8 +90,23 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.Connec
                 }
             }
         });
+        autoCompleteTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //getSearchResult(autoCompleteTextView.getText().toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         autoCompleteTextView.setVisibility(View.GONE);
-        //
         initHome();
     }
 
@@ -105,20 +133,23 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.Connec
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
-    public void updateSearchContent(List<Country> countryList) {
-        List<String> stringList = new ArrayList<>();
-
+    public void updateSearchContent(final List<Country> countryList) {
+        this.countryList = countryList;
+        final List<String> stringList = new ArrayList<>();
         for (Country country : countryList) {
             stringList.add(country.getName());
         }
-
         //search
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+        stringArrayAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, stringList);
-        autoCompleteTextView = (AutoCompleteTextView)
-                findViewById(R.id.countries_list);
-
-        autoCompleteTextView.setAdapter(adapter);
+        autoCompleteTextView.setAdapter(stringArrayAdapter);
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (countryList != null && countryList.size() > 0)
+                    replaceFragment(FiveDaysForecastFragment.newInstance(autoCompleteTextView.getText().toString()));
+            }
+        });
     }
 
     // Location Serivce Section
@@ -131,7 +162,6 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.Connec
             buildGoogleApiClient();
         }
     }
-
 
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -179,8 +209,8 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.Connec
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
+        sharedPreferenceManager.saveBoolean(Constants.IS_LOCATION_REQUESTED, true);
         homeFragmentCommunicator.isLocationGranted(true, location);
-        Toast.makeText(this, location.getLatitude() + " WORKS " + location.getLongitude() + "", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -197,9 +227,7 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.Connec
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             buildAlertMessageNoGps();
-        }
-        else
-        {
+        } else {
             startLocationUpdates();
         }
     }
@@ -216,7 +244,7 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.Connec
                 .setNegativeButton(R.string.gps_alert_dialog_no_button, new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         dialog.cancel();
-                        homeFragmentCommunicator.isLocationGranted(false,null);
+                        homeFragmentCommunicator.isLocationGranted(false, null);
                     }
                 });
         final AlertDialog alert = builder.create();
@@ -258,5 +286,57 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.Connec
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
                     locationRequest, this);
         }
+    }
+
+    public void getSearchResult(String cityName) {
+        service.searchByCityName(cityName, Constants.SEARCH_TYPE, Constants.WEATHER_API_KEY)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<FiveDaysForeCastModel>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(FiveDaysForeCastModel fiveDaysForeCastModel) {
+                        List<String> stringList = new ArrayList<>();
+                        stringList.add(fiveDaysForeCastModel.getCity().getName());
+                        //search
+                        stringArrayAdapter = new ArrayAdapter<String>(MainActivity.this,
+                                android.R.layout.simple_dropdown_item_1line, stringList);
+                        autoCompleteTextView.setAdapter(stringArrayAdapter);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        int strRes;
+                        ErrorModel errorModel = ErrorHandler.getErrorModel(e);
+                        switch (errorModel.getErrorType()) {
+                            case ErrorModel.ErrorType.NETWORK_ERROR:
+                                if (isConnected()) {
+                                    strRes = R.string.error_msg_no_internet;
+                                } else {
+                                    strRes = R.string.error_msg_timeout;
+                                }
+                                break;
+
+                            default:
+                                strRes = R.string.error_msg_unknown;
+                                break;
+                        }
+                        showError(strRes);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    @Override
+    public void showError(int errorMessage) {
+        Toast.makeText(this, getString(errorMessage), Toast.LENGTH_SHORT).show();
     }
 }

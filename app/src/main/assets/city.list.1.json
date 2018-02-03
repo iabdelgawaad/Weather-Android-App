@@ -1,0 +1,244 @@
+[ {
+    "id": 663094,
+    "name": "Vatra Veche",
+    "country": "RO",
+    "coord": {
+      "lon": 27.966669,
+      "lat": 45.26667
+    }
+  },
+  {
+    "id": 1665988,
+    "name": "Zhigaozhuang",
+    "country": "TW",
+    "coord": {
+      "lon": 120.61602,
+      "lat": 24.154539
+    }
+  },
+  {
+    "id": 71532,
+    "name": "Muḩāfaz̧at Raymah",
+    "country": "YE",
+    "coord": {
+      "lon": 43.666672,
+      "lat": 14.63333
+    }
+  },
+  {
+    "id": 6940638,
+    "name": "As Salafiyah",
+    "country": "YE",
+    "coord": {
+      "lon": 43.821602,
+      "lat": 14.6866
+    }
+  },
+  {
+    "id": 79657,
+    "name": "Al Ḩabīt",
+    "country": "YE",
+    "coord": {
+      "lon": 43.799999,
+      "lat": 14.75
+    }
+  },
+  {
+    "id": 2864071,
+    "name": "Neustadt",
+    "country": "DE",
+    "coord": {
+      "lon": 12.56667,
+      "lat": 52.400002
+    }
+  },
+  {
+    "id": 1704628,
+    "name": "Mabiga",
+    "country": "PH",
+    "coord": {
+      "lon": 120.585098,
+      "lat": 15.1917
+    }
+  },
+  {
+    "id": 3076348,
+    "name": "Dubí",
+    "country": "CZ",
+    "coord": {
+      "lon": 15.41857,
+      "lat": 49.533878
+    }
+  },
+  {
+    "id": 6811761,
+    "name": "Wŏnsŏngil-tong",
+    "country": "KR",
+    "coord": {
+      "lon": 127.161346,
+      "lat": 36.809792
+    }
+  },
+  {
+    "id": 696416,
+    "name": "Potok",
+    "country": "UA",
+    "coord": {
+      "lon": 25.03334,
+      "lat": 49.512241
+    }
+  },
+  {
+    "id": 6845986,
+    "name": "Mironovka",
+    "country": "RU",
+    "coord": {
+      "lon": 44.214001,
+      "lat": 54.499802
+    }
+  },
+  {
+    "id": 670942,
+    "name": "Petroman",
+    "country": "RO",
+    "coord": {
+      "lon": 21.116671,
+      "lat": 45.533329
+    }
+  },
+  {
+    "id": 2620274,
+    "name": "Hjallese",
+    "country": "DK",
+    "coord": {
+      "lon": 10.38499,
+      "lat": 55.348289
+    }
+  },
+  {
+    "id": 2624596,
+    "name": "Årslev",
+    "country": "DK",
+    "coord": {
+      "lon": 9.3485,
+      "lat": 55.026772
+    }
+  },
+  {
+    "id": 2615199,
+    "name": "Pederstrup",
+    "country": "DK",
+    "coord": {
+      "lon": 10.48753,
+      "lat": 55.285309
+    }
+  },
+  {
+    "id": 2617486,
+    "name": "Lombjerg",
+    "country": "DK",
+    "coord": {
+      "lon": 10.48705,
+      "lat": 55.229301
+    }
+  },
+  {
+    "id": 2622198,
+    "name": "Findinge",
+    "country": "DK",
+    "coord": {
+      "lon": 10.4216,
+      "lat": 55.21748
+    }
+  },
+  {
+    "id": 2618070,
+    "name": "Kværndrup",
+    "country": "DK",
+    "coord": {
+      "lon": 10.52549,
+      "lat": 55.177521
+    }
+  },
+  {
+    "id": 2612594,
+    "name": "Stenstrup",
+    "country": "DK",
+    "coord": {
+      "lon": 10.50474,
+      "lat": 55.133518
+    }
+  },
+  {
+    "id": 2623621,
+    "name": "Borup",
+    "country": "DK",
+    "coord": {
+      "lon": 9.50689,
+      "lat": 56.922081
+    }
+  },
+  {
+    "id": 2750888,
+    "name": "Middeldijk",
+    "country": "NL",
+    "coord": {
+      "lon": 4.51667,
+      "lat": 51.849998
+    }
+  },
+  {
+    "id": 2610888,
+    "name": "Understed",
+    "country": "DK",
+    "coord": {
+      "lon": 10.51667,
+      "lat": 57.383331
+    }
+  },
+  {
+    "id": 2613685,
+    "name": "Skodsborg",
+    "country": "DK",
+    "coord": {
+      "lon": 12.57324,
+      "lat": 55.822498
+    }
+  },
+  {
+    "id": 2613357,
+    "name": "Smidstrup",
+    "country": "DK",
+    "coord": {
+      "lon": 12.55787,
+      "lat": 55.865688
+    }
+  },
+  {
+    "id": 6460975,
+    "name": "Rastnik",
+    "country": "BG",
+    "coord": {
+      "lon": 25.283331,
+      "lat": 41.400002
+    }
+  },
+  {
+    "id": 727762,
+    "name": "Rastnik",
+    "country": "BG",
+    "coord": {
+      "lon": 25.283331,
+      "lat": 41.400002
+    }
+  },
+  {
+    "id": 596826,
+    "name": "Murava",
+    "country": "LT",
+    "coord": {
+      "lon": 23.966669,
+      "lat": 54.916672
+    }
+  }
+ ]

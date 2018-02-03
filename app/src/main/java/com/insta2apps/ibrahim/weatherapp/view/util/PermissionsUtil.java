@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 
 import com.insta2apps.ibrahim.weatherapp.R;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
  */
 
 public class PermissionsUtil {
-    public static final int REQUEST_LOCATION_PERMISSION= 200;
+    public static final int REQUEST_LOCATION_PERMISSION = 200;
 
     public static boolean checkLocationPermission(final Activity activity) {
         ArrayList<String> permissionsNeeded = new ArrayList<>();
@@ -27,9 +28,10 @@ public class PermissionsUtil {
             if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
 
-                new AlertDialog.Builder(activity)
+                final AlertDialog alert = new AlertDialog.Builder(activity)
                         .setTitle(activity.getString(R.string.dialog_location_permission_title))
                         .setMessage(activity.getString(R.string.dialog_location_permission_message))
+                        .setCancelable(false)
                         .setPositiveButton(activity.getString(R.string.ok_text), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -39,9 +41,21 @@ public class PermissionsUtil {
                                 );
                             }
                         })
-                        .create()
-                        .show();
+                        .create();
+
+                //Set dialog button color
+                alert.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialog) {
+                        alert.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor
+                                (activity, R.color.blue));
+                        alert.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor
+                                (activity, R.color.blue));
+                    }
+                });
+                alert.show();
                 return false;
+
             } else {
                 permissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
             }
