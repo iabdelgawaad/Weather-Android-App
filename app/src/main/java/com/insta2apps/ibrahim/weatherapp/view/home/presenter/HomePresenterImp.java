@@ -7,8 +7,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.insta2apps.ibrahim.weatherapp.R;
 import com.insta2apps.ibrahim.weatherapp.WeatherApplication;
-import com.insta2apps.ibrahim.weatherapp.domain.error.ErrorHandler;
-import com.insta2apps.ibrahim.weatherapp.domain.error.ErrorModel;
+import com.insta2apps.ibrahim.weatherapp.source.database.AppDatabase;
+import com.insta2apps.ibrahim.weatherapp.source.database.DatabaseInitializer;
+import com.insta2apps.ibrahim.weatherapp.source.database.entity.City;
+import com.insta2apps.ibrahim.weatherapp.source.network.error.ErrorHandler;
+import com.insta2apps.ibrahim.weatherapp.source.network.error.ErrorModel;
 import com.insta2apps.ibrahim.weatherapp.source.network.ApiService;
 import com.insta2apps.ibrahim.weatherapp.source.network.NetworkManager;
 import com.insta2apps.ibrahim.weatherapp.view.activity.MainActivity;
@@ -36,20 +39,22 @@ import static com.insta2apps.ibrahim.weatherapp.view.base.Constants.IS_LOCATION_
  * Created by Ibrahim AbdelGawad on 1/30/2018.
  */
 
-public class HomePresenterImp extends HomePresenter {
+public class HomePresenterImp extends HomePresenter implements DatabaseInitializer.OnDatabaseCrudOperation {
     private static final String CityFile = "city.list.json";
+    DatabaseInitializer databaseInitializer;
 
     public HomePresenterImp(HomeView homeView) {
         attachView(homeView);
     }
 
     @Override
-    public void remove(int cityId) {
-
+    public void remove(City city) {
+        databaseInitializer.removeAsync(AppDatabase.getAppDatabase(WeatherApplication.getInstance()) , city);
+        getHomeScreenAddedCities();
     }
 
     @Override
-    public void onItemClick(Country country) {
+    public void onItemClick(City country) {
         getView().openItemDetail(country);
     }
 
@@ -73,6 +78,7 @@ public class HomePresenterImp extends HomePresenter {
         super.init();
         if (getView() == null) return;
         if (getView() instanceof HomeFragment) {
+            databaseInitializer = new DatabaseInitializer(this);
             boolean isLocationRequested = ((MainActivity) ((HomeFragment) getView()).getActivity()).sharedPreferenceManager.getBoolean
                     (IS_LOCATION_REQUESTED, false);
             if (isLocationRequested) {
@@ -82,7 +88,6 @@ public class HomePresenterImp extends HomePresenter {
             }
         }
     }
-
 
     private class GetSearchData extends AsyncTask<Void, Void, List<Country>> {
         @Override
@@ -114,9 +119,13 @@ public class HomePresenterImp extends HomePresenter {
                     public void onNext(Country country) {
                         if (getView() == null) return;
                         if (country != null && country.getId() != null) {
-                            ArrayList<Country> countryArrayList = new ArrayList<>();
-                            countryArrayList.add(country);
-                            getView().showCountryList(countryArrayList);
+                           City city = new City();
+                           city.setName(country.getName());
+                           city.setId(country.getId());
+                            //add to DB
+                            databaseInitializer.addAsync(AppDatabase.getAppDatabase(WeatherApplication.getInstance()) , city);
+                            getHomeScreenAddedCities();
+
                         } else {
                             //API: lat,lon not working..
                             //Load england as a default city
@@ -169,12 +178,12 @@ public class HomePresenterImp extends HomePresenter {
             @Override
             public void onNext(FiveDaysForeCastModel fiveDaysForeCastModel) {
                 if (fiveDaysForeCastModel != null) {
-                    ArrayList<Country> countryArrayList = new ArrayList<>();
-                    Country country = new Country();
-                    country.setId(fiveDaysForeCastModel.getCity().getId());
-                    country.setName(fiveDaysForeCastModel.getCity().getName());
-                    countryArrayList.add(country);
-                    getView().showCountryList(countryArrayList);
+                    //add to DB
+                    City city = new City();
+                    city.setId(fiveDaysForeCastModel.getCity().getId());
+                    city.setName(fiveDaysForeCastModel.getCity().getName());
+                    databaseInitializer.addAsync(AppDatabase.getAppDatabase(WeatherApplication.getInstance()) , city);
+                    getHomeScreenAddedCities();
                 }
             }
 
@@ -208,6 +217,10 @@ public class HomePresenterImp extends HomePresenter {
         });
     }
 
+    public void getHomeScreenAddedCities()
+    {
+        databaseInitializer.populateAsync(AppDatabase.getAppDatabase(WeatherApplication.getInstance()));
+    }
     //Get data from local json file {Bulk}
     public List<Country> getSearchCountyList() {
         List<Country> theList = null;
@@ -222,5 +235,11 @@ public class HomePresenterImp extends HomePresenter {
             e.printStackTrace();
         }
         return theList;
+    }
+
+    @Override
+    public void getSelectedCities(List<City> cityList) {
+        getView().showCountryList(cityList);
+
     }
 }

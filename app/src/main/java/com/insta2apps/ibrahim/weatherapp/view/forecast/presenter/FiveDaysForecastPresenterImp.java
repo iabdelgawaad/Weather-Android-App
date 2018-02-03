@@ -3,16 +3,20 @@ package com.insta2apps.ibrahim.weatherapp.view.forecast.presenter;
 import com.google.gson.Gson;
 import com.insta2apps.ibrahim.weatherapp.R;
 import com.insta2apps.ibrahim.weatherapp.WeatherApplication;
-import com.insta2apps.ibrahim.weatherapp.domain.error.ErrorHandler;
-import com.insta2apps.ibrahim.weatherapp.domain.error.ErrorModel;
+import com.insta2apps.ibrahim.weatherapp.source.database.AppDatabase;
+import com.insta2apps.ibrahim.weatherapp.source.database.DatabaseInitializer;
+import com.insta2apps.ibrahim.weatherapp.source.database.entity.City;
 import com.insta2apps.ibrahim.weatherapp.source.network.ApiService;
 import com.insta2apps.ibrahim.weatherapp.source.network.NetworkManager;
+import com.insta2apps.ibrahim.weatherapp.source.network.error.ErrorHandler;
+import com.insta2apps.ibrahim.weatherapp.source.network.error.ErrorModel;
 import com.insta2apps.ibrahim.weatherapp.view.base.Constants;
 import com.insta2apps.ibrahim.weatherapp.view.forecast.ForecastView;
 import com.insta2apps.ibrahim.weatherapp.view.forecast.model.FiveDaysForeCastModel;
 import com.insta2apps.ibrahim.weatherapp.view.util.FileUtils;
 
 import java.io.IOException;
+import java.util.List;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -23,7 +27,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Ibrahim AbdelGawad on 2/1/2018.
  */
 
-public class FiveDaysForecastPresenterImp extends FiveDaysForecastPresenter {
+public class FiveDaysForecastPresenterImp extends FiveDaysForecastPresenter implements DatabaseInitializer.OnDatabaseCrudOperation {
 
     private static final String CityFile = "selected.city.json";
 
@@ -40,7 +44,7 @@ public class FiveDaysForecastPresenterImp extends FiveDaysForecastPresenter {
         NetworkManager networkManager = new NetworkManager(WeatherApplication.getInstance());
         ApiService service = networkManager.service();
 
-        service.getCountryByCityName(cityName, Constants.WEATHER_API_KEY , Constants.TEMP_UNIT).subscribeOn(Schedulers.io()).
+        service.getCountryByCityName(cityName, Constants.WEATHER_API_KEY, Constants.TEMP_UNIT).subscribeOn(Schedulers.io()).
                 observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<FiveDaysForeCastModel>() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -99,6 +103,12 @@ public class FiveDaysForecastPresenterImp extends FiveDaysForecastPresenter {
         getCityByNameService(cityName);
     }
 
+    @Override
+    public void addCity(City city) {
+        DatabaseInitializer databaseInitializer = new DatabaseInitializer(this);
+        databaseInitializer.addAsync(AppDatabase.getAppDatabase(WeatherApplication.getInstance()), city);
+    }
+
     //Just to simulate the server...
     public FiveDaysForeCastModel getCityObject() {
         FiveDaysForeCastModel fiveDaysForeCastModel = null;
@@ -110,5 +120,10 @@ public class FiveDaysForecastPresenterImp extends FiveDaysForecastPresenter {
             e.printStackTrace();
         }
         return fiveDaysForeCastModel;
+    }
+
+    @Override
+    public void getSelectedCities(List<City> cityList) {
+
     }
 }

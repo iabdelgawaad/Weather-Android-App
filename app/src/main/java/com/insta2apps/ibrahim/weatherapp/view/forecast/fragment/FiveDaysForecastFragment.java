@@ -95,6 +95,12 @@ public class FiveDaysForecastFragment extends BaseFragment<FiveDaysForecastPrese
             getPresenter().getCityByName(getArguments().getString(Constants.CITY_NAME), true);
         }
         mSwipeRefreshLayout.setOnRefreshListener(this);
+        addImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+          }
+        });
     }
 
     @Override

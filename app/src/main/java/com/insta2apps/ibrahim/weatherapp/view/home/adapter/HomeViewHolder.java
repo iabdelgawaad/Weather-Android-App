@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.insta2apps.ibrahim.weatherapp.R;
+import com.insta2apps.ibrahim.weatherapp.source.database.entity.City;
 import com.insta2apps.ibrahim.weatherapp.view.home.model.Country;
 
 import butterknife.BindView;
@@ -34,7 +35,7 @@ public class HomeViewHolder extends RecyclerView.ViewHolder {
         this.context = context;
     }
 
-    public void bind(final Country item, final HomeAdapter.OnItemClickListener listener) {
+    public void bind(final City item, final HomeAdapter.OnItemClickListener listener) {
         title.setText(item.getName());
         try {
             Glide.with(context).load(R.drawable.ic_cloud).into(image);

@@ -44,5 +44,6 @@ ext {
     okhttpVersion = '3.4.0'
     butterknife = '8.4.0'
     glade = '3.7.0'
+    archRoomVersion = "1.0.0-alpha1"
 }
 

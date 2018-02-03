@@ -14,9 +14,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.insta2apps.ibrahim.weatherapp.R;
+import com.insta2apps.ibrahim.weatherapp.source.database.entity.City;
 import com.insta2apps.ibrahim.weatherapp.view.activity.MainActivity;
 import com.insta2apps.ibrahim.weatherapp.view.base.BaseFragment;
 import com.insta2apps.ibrahim.weatherapp.view.forecast.fragment.FiveDaysForecastFragment;
@@ -53,7 +53,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeAda
     @BindView(R.id.error_txt_cause)
     TextView txtError;
 
-    private List<Country> countryList = new ArrayList<>();
+    private List<City> cityList = new ArrayList<>();
 
     public HomeFragment() {
     }
@@ -105,30 +105,33 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeAda
     }
 
     @Override
-    public void onItemClick(Country country) {
-        Toast.makeText(getActivity(), "On item Click ", Toast.LENGTH_SHORT).show();
+    public void onItemClick(City country) {
         if (country != null)
             getPresenter().onItemClick(country);
     }
 
     @Override
-    public void onRemoveIconClick(Country country) {
-        Toast.makeText(getActivity(), "On remove Click ", Toast.LENGTH_SHORT).show();
+    public void onRemoveIconClick(City country) {
 
         if (country != null)
-            getPresenter().remove(country.getId());
+        {
+            City city = new City();
+            city.setName(country.getName());
+            city.setId(country.getId());
+            getPresenter().remove(city);
+        }
     }
 
     @Override
-    public void showCountryList(List<Country> countryList1) {
-        this.countryList = countryList1;
-        homeAdapter = new HomeAdapter(getActivity(), countryList, this);
+    public void showCountryList(List<City> countryList1) {
+        this.cityList = countryList1;
+        homeAdapter = new HomeAdapter(getActivity(), cityList, this);
         recyclerView.setAdapter(homeAdapter);
         homeAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void openItemDetail(Country country) {
+    public void openItemDetail(City country) {
         if (getActivity() instanceof MainActivity)
             ((MainActivity) getActivity()).replaceFragment(FiveDaysForecastFragment.newInstance(country.getName() + ""));
     }
@@ -186,15 +189,15 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeAda
     public void onStop() {
         super.onStop();
 
-        if (countryList != null)
-            countryList.clear();
+        if (cityList != null)
+            cityList.clear();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        if (countryList != null && countryList.size() > 0)
-            countryList.clear();
+        if (cityList != null && cityList.size() > 0)
+            cityList.clear();
     }
 
     @Override

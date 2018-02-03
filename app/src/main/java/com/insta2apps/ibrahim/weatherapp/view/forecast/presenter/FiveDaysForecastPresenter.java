@@ -1,5 +1,6 @@
 package com.insta2apps.ibrahim.weatherapp.view.forecast.presenter;
 
+import com.insta2apps.ibrahim.weatherapp.source.database.entity.City;
 import com.insta2apps.ibrahim.weatherapp.view.base.BasePresenter;
 import com.insta2apps.ibrahim.weatherapp.view.forecast.ForecastView;
 
@@ -10,4 +11,5 @@ import com.insta2apps.ibrahim.weatherapp.view.forecast.ForecastView;
 public abstract class FiveDaysForecastPresenter extends BasePresenter<ForecastView> {
     public abstract void getCityById(String cityId , boolean isLoading);
     public abstract void getCityByName(String cityName , boolean isLoading);
+    public abstract void addCity(City city);
 }

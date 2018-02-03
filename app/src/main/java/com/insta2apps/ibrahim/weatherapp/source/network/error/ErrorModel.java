@@ -1,4 +1,4 @@
-package com.insta2apps.ibrahim.weatherapp.domain.error;
+package com.insta2apps.ibrahim.weatherapp.source.network.error;
 
 import android.support.annotation.IntDef;
 

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.insta2apps.ibrahim.weatherapp.R;
+import com.insta2apps.ibrahim.weatherapp.source.database.entity.City;
 import com.insta2apps.ibrahim.weatherapp.view.home.model.Country;
 
 import java.util.List;
@@ -17,16 +18,16 @@ import java.util.List;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeViewHolder> {
     private Context mContext;
-    private List<Country> countryModelList;
+    private List<City> countryModelList;
 
     public interface OnItemClickListener {
-        void onItemClick(Country country);
-        void onRemoveIconClick(Country country);
+        void onItemClick(City city);
+        void onRemoveIconClick(City city);
     }
 
     private final OnItemClickListener listener;
 
-    public HomeAdapter(Context mContext, List<Country> countryModelList, OnItemClickListener listener) {
+    public HomeAdapter(Context mContext, List<City> countryModelList, OnItemClickListener listener) {
         this.mContext = mContext;
         this.countryModelList = countryModelList;
         this.listener = listener;
