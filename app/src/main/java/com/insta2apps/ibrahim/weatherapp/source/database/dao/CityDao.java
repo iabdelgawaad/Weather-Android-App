@@ -28,4 +28,7 @@ public interface CityDao {
 
     @Delete
     void delete(City city);
+
+    @Query("DELETE FROM city where name Like:cityName")
+    void deleteCityByName(String cityName);
 }

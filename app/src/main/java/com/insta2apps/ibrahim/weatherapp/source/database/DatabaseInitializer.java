@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.insta2apps.ibrahim.weatherapp.source.database.entity.City;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public class DatabaseInitializer {
     }
 
     private static void removeCity(final AppDatabase db, City city) {
-        db.cityDao().delete(city);
+        db.cityDao().deleteCityByName(city.getName());
     }
 
 
@@ -64,22 +65,28 @@ public class DatabaseInitializer {
     class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
         private final AppDatabase mDb;
+        private List<City> cityList;
 
         PopulateDbAsync(AppDatabase db) {
             mDb = db;
+            cityList = new ArrayList<>();
         }
 
         @Override
         protected Void doInBackground(final Void... params) {
-            List<City> cityList = mDb.cityDao().getAll();
-            onDatabaseCrudOperation.getSelectedCities(cityList);
+             cityList = mDb.cityDao().getAll();
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            onDatabaseCrudOperation.getSelectedCities(cityList);
         }
     }
 
     public void removeAsync(@Nullable AppDatabase db, City city) {
-        AddDbAsync addDbAsync = new AddDbAsync(db, city);
-        addDbAsync.execute();
+        RemoveDbAsync removeDbAsync = new RemoveDbAsync(db, city);
+        removeDbAsync.execute();
     }
 
     class RemoveDbAsync extends AsyncTask<Void, Void, Void> {
@@ -95,6 +102,12 @@ public class DatabaseInitializer {
         protected Void doInBackground(final Void... params) {
             removeCity(mDb, city);
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            PopulateDbAsync populateDbAsync = new PopulateDbAsync(this.mDb);
+            populateDbAsync.execute();
         }
     }
 }

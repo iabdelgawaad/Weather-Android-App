@@ -97,6 +97,10 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeAda
         super.onResume();
         if (getActivity() instanceof MainActivity)
             ((MainActivity) getActivity()).setAppBarVisibility(true);
+
+        if (cityList != null && cityList.size() > 0) {
+            cityList.clear();
+        }
     }
 
     @Override
@@ -113,11 +117,9 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeAda
     @Override
     public void onRemoveIconClick(City country) {
 
-        if (country != null)
-        {
+        if (country != null) {
             City city = new City();
             city.setName(country.getName());
-            city.setId(country.getId());
             getPresenter().remove(city);
         }
     }
@@ -203,5 +205,14 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeAda
     @Override
     public void isLocationGranted(boolean isLocationGranted, Location location) {
         getPresenter().getSearchCityData(location);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (cityList != null && cityList.size() > 0) {
+            cityList.clear();
+        }
     }
 }

@@ -38,7 +38,6 @@ public class City {
     }
 
     @PrimaryKey(autoGenerate = true)
-
     private int id;
 
     @ColumnInfo(name = "name")

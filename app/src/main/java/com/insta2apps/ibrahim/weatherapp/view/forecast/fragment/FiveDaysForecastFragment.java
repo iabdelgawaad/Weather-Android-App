@@ -11,9 +11,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.insta2apps.ibrahim.weatherapp.R;
+import com.insta2apps.ibrahim.weatherapp.source.database.entity.City;
 import com.insta2apps.ibrahim.weatherapp.view.activity.MainActivity;
 import com.insta2apps.ibrahim.weatherapp.view.base.BaseFragment;
 import com.insta2apps.ibrahim.weatherapp.view.base.Constants;
@@ -98,8 +100,12 @@ public class FiveDaysForecastFragment extends BaseFragment<FiveDaysForecastPrese
         addImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                City city = new City();
+                city.setName(cityName.getText().toString());
+                getPresenter().addCity(city);
 
-          }
+                Toast.makeText(getActivity(), "City added to home screen", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

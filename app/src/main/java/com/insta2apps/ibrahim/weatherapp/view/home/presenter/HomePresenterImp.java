@@ -41,7 +41,7 @@ import static com.insta2apps.ibrahim.weatherapp.view.base.Constants.IS_LOCATION_
 
 public class HomePresenterImp extends HomePresenter implements DatabaseInitializer.OnDatabaseCrudOperation {
     private static final String CityFile = "city.list.json";
-    DatabaseInitializer databaseInitializer;
+    private static DatabaseInitializer databaseInitializer;
 
     public HomePresenterImp(HomeView homeView) {
         attachView(homeView);
@@ -50,7 +50,6 @@ public class HomePresenterImp extends HomePresenter implements DatabaseInitializ
     @Override
     public void remove(City city) {
         databaseInitializer.removeAsync(AppDatabase.getAppDatabase(WeatherApplication.getInstance()) , city);
-        getHomeScreenAddedCities();
     }
 
     @Override
@@ -78,11 +77,12 @@ public class HomePresenterImp extends HomePresenter implements DatabaseInitializ
         super.init();
         if (getView() == null) return;
         if (getView() instanceof HomeFragment) {
+            getView().showLoading();
             databaseInitializer = new DatabaseInitializer(this);
             boolean isLocationRequested = ((MainActivity) ((HomeFragment) getView()).getActivity()).sharedPreferenceManager.getBoolean
                     (IS_LOCATION_REQUESTED, false);
             if (isLocationRequested) {
-                getSearchCityData(null);
+                new GetSearchData().execute();
             } else {
                 getView().requestLocationPermission();
             }
@@ -99,6 +99,7 @@ public class HomePresenterImp extends HomePresenter implements DatabaseInitializ
         protected void onPostExecute(List<Country> countryList) {
             getView().showContent();
             getView().updateSearchContent(countryList);
+            getHomeScreenAddedCities();
         }
     }
 
@@ -121,11 +122,8 @@ public class HomePresenterImp extends HomePresenter implements DatabaseInitializ
                         if (country != null && country.getId() != null) {
                            City city = new City();
                            city.setName(country.getName());
-                           city.setId(country.getId());
                             //add to DB
                             databaseInitializer.addAsync(AppDatabase.getAppDatabase(WeatherApplication.getInstance()) , city);
-                            getHomeScreenAddedCities();
-
                         } else {
                             //API: lat,lon not working..
                             //Load england as a default city
@@ -180,10 +178,8 @@ public class HomePresenterImp extends HomePresenter implements DatabaseInitializ
                 if (fiveDaysForeCastModel != null) {
                     //add to DB
                     City city = new City();
-                    city.setId(fiveDaysForeCastModel.getCity().getId());
                     city.setName(fiveDaysForeCastModel.getCity().getName());
                     databaseInitializer.addAsync(AppDatabase.getAppDatabase(WeatherApplication.getInstance()) , city);
-                    getHomeScreenAddedCities();
                 }
             }
 
@@ -240,6 +236,5 @@ public class HomePresenterImp extends HomePresenter implements DatabaseInitializ
     @Override
     public void getSelectedCities(List<City> cityList) {
         getView().showCountryList(cityList);
-
     }
 }
