@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.insta2apps.ibrahim.weatherapp.source.database.entity.City;
+import com.insta2apps.ibrahim.weatherapp.source.database.repository.AppDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +26,11 @@ public class DatabaseInitializer {
     }
 
     private static void addCity(final AppDatabase db, City city) {
-        db.cityDao().insertAll(city);
+        db.getCityDao().insertAll(city);
     }
 
     private static void removeCity(final AppDatabase db, City city) {
-        db.cityDao().deleteCityByName(city.getName());
+        db.getCityDao().deleteCityByName(city.getName());
     }
 
 
@@ -74,7 +75,7 @@ public class DatabaseInitializer {
 
         @Override
         protected Void doInBackground(final Void... params) {
-             cityList = mDb.cityDao().getAll();
+             cityList = mDb.getCityDao().getAll();
             return null;
         }
 

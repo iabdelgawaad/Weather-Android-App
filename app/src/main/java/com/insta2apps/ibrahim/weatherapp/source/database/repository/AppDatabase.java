@@ -1,4 +1,4 @@
-package com.insta2apps.ibrahim.weatherapp.source.database;
+package com.insta2apps.ibrahim.weatherapp.source.database.repository;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
@@ -17,7 +17,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase INSTANCE;
 
-    public abstract CityDao cityDao();
+    public abstract CityDao getCityDao();
 
     public static AppDatabase getAppDatabase(Context context) {
         if (INSTANCE == null) {

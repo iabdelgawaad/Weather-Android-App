@@ -3,7 +3,7 @@ package com.insta2apps.ibrahim.weatherapp.view.forecast.presenter;
 import com.google.gson.Gson;
 import com.insta2apps.ibrahim.weatherapp.R;
 import com.insta2apps.ibrahim.weatherapp.WeatherApplication;
-import com.insta2apps.ibrahim.weatherapp.source.database.AppDatabase;
+import com.insta2apps.ibrahim.weatherapp.source.database.repository.AppDatabase;
 import com.insta2apps.ibrahim.weatherapp.source.database.DatabaseInitializer;
 import com.insta2apps.ibrahim.weatherapp.source.database.entity.City;
 import com.insta2apps.ibrahim.weatherapp.source.network.ApiService;
